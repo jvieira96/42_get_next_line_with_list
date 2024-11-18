@@ -12,23 +12,6 @@
 
 #include "get_next_line.h"
 
-void	append_list(t_list **list, char *buf)
-{
-	t_list	*newnode;
-	t_list	*last_node;
-
-	last_node = find_last_node(*list);
-	newnode = malloc(sizeof(t_list));
-	if (newnode == NULL)
-		return ;
-	if (list == NULL)
-		*list = newnode;
-	else
-		last_node->next = newnode;
-	newnode->str = buf;
-	newnode->next = NULL;
-}
-
 int	found_newline(t_list *list)
 {
 	int	i;
@@ -49,27 +32,13 @@ int	found_newline(t_list *list)
 	return (0);
 }
 
-int	len_list(t_list *list)
+t_list	*find_last_node(t_list *list)
 {
-	int	len;
-	int	i;
-
-	while (list)
-	{
-		i = 0;
-		while (list->str[i])
-		{
-			if (list->str[i] == '\n')
-			{
-				len++;
-				return (len);
-			}
-			len++;
-			i++;
-		}
+	if (list == NULL)
+		return (NULL);
+	while (list->next)
 		list = list->next;
-	}
-	return (len);
+	return (list);
 }
 
 void	copy_str(t_list *list, char *new_str)
@@ -99,11 +68,48 @@ void	copy_str(t_list *list, char *new_str)
 	new_str[x] = '\0';
 }
 
-t_list	*find_last_node(t_list *list)
+int	len_list(t_list *list)
 {
-	if (list == NULL)
-		return (NULL);
-	while (list->next)
+	int	len;
+	int	i;
+
+	while (list)
+	{
+		i = 0;
+		while (list->str[i])
+		{
+			if (list->str[i] == '\n')
+			{
+				len++;
+				return (len);
+			}
+			len++;
+			i++;
+		}
 		list = list->next;
-	return (list);
+	}
+	return (len);
+}
+
+void	dealloc(t_list **list, t_list *clean_node, char *buf)
+{
+	t_list	*temp;
+
+	if (*list == NULL)
+		return ;
+	while (*list)
+	{
+		temp = (*list)->next;
+		free((*list)->str);
+		free(*list);
+		*list = temp;
+	}
+	*list = NULL;
+	if (clean_node->str[0])
+		*list = clean_node;
+	else
+	{
+		free(buf);
+		free(clean_node);
+	}
 }

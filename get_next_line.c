@@ -12,29 +12,6 @@
 
 #include "get_next_line.h"
 
-void	dealloc(t_list **list, t_list *clean_node, char *buf)
-{
-	t_list	*temp;
-
-	if (*list == NULL)
-		return ;
-	while (*list)
-	{
-		temp = (*list)->next;
-		free((*list)->str);
-		free(*list);
-		*list = temp;
-	}
-	*list = NULL;
-	if (clean_node->str[0])
-		*list = clean_node;
-	else
-	{
-		free(buf);
-		free(clean_node);
-	}
-}
-
 void	list_prep(t_list **list)
 {
 	int		i;
@@ -63,6 +40,38 @@ void	list_prep(t_list **list)
 	dealloc(list, clean_node, buf);
 }
 
+char	*get_line(t_list *list)
+{
+	int		str_len;
+	char	*next_str;
+
+	if (list == NULL)
+		return (NULL);
+	str_len = len_list(list);
+	next_str = malloc(str_len + 1);
+	if (next_str == NULL)
+		return (NULL);
+	copy_str(list, next_str);
+	return (next_str);
+}
+
+void	append_list(t_list **list, char *buf)
+{
+	t_list	*newnode;
+	t_list	*last_node;
+
+	last_node = find_last_node(*list);
+	newnode = malloc(sizeof(t_list));
+	if (newnode == NULL)
+		return ;
+	if (list == NULL)
+		*list = newnode;
+	else
+		last_node->next = newnode;
+	newnode->str = buf;
+	newnode->next = NULL;
+}
+
 void	list_add(t_list **list, int fd)
 {
 	int		char_read;
@@ -84,21 +93,6 @@ void	list_add(t_list **list, int fd)
 	}
 }
 
-char	*get_line(t_list *list)
-{
-	int		str_len;
-	char	*next_str;
-
-	if (list == NULL)
-		return (NULL);
-	str_len = len_list(list);
-	next_str = malloc(str_len + 1);
-	if (next_str == NULL)
-		return (NULL);
-	copy_str(list, next_str);
-	return (next_str);
-}
-
 char	*get_next_line(int fd)
 {
 	t_list	*list;
@@ -115,13 +109,13 @@ char	*get_next_line(int fd)
 	return (next_line);
 }
 
-// int	main(void)
-// {
-// 	int	fd;
+int	main(void)
+{
+	int	fd;
 
-// 	fd = open("file.txt", O_RDWR | O_CREAT);
-// 	if (fd < 0)
-// 		printf("error open");
-// 	printf("%s", get_next_line(fd));
-// 	return (0);
-// }
+	fd = open("file.txt", O_RDWR | O_CREAT);
+	if (fd < 0)
+		printf("error open");
+	printf("%s", get_next_line(fd));
+	return (0);
+}
