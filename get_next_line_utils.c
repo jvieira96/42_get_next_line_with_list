@@ -16,7 +16,7 @@ int	found_newline(t_list *list)
 {
 	int	i;
 
-	if (NULL == list)
+	if (list == NULL)
 		return (0);
 	while (list)
 	{
@@ -25,7 +25,7 @@ int	found_newline(t_list *list)
 		{
 			if (list->str[i] == '\n')
 				return (1);
-			i++;
+			++i;
 		}
 		list = list->next;
 	}
@@ -46,8 +46,9 @@ void	copy_str(t_list *list, char *new_str)
 	int	i;
 	int	x;
 
+	if (list == NULL)
+		return ;
 	x = 0;
-	i = 0;
 	while (list)
 	{
 		i = 0;
@@ -55,13 +56,11 @@ void	copy_str(t_list *list, char *new_str)
 		{
 			if (list->str[i] == '\n')
 			{
-				new_str[x++] = list->str[i];
+				new_str[x++] = '\n';
 				new_str[x] = '\0';
 				return ;
 			}
-			new_str[x] = list->str[i];
-			i++;
-			x++;
+			new_str[x++] = list->str[i++];
 		}
 		list = list->next;
 	}
@@ -73,6 +72,9 @@ int	len_list(t_list *list)
 	int	len;
 	int	i;
 
+	if (list == NULL)
+		return (0);
+	len = 0;
 	while (list)
 	{
 		i = 0;
@@ -80,11 +82,11 @@ int	len_list(t_list *list)
 		{
 			if (list->str[i] == '\n')
 			{
-				len++;
+				++len;
 				return (len);
 			}
-			len++;
-			i++;
+			++len;
+			++i;
 		}
 		list = list->next;
 	}

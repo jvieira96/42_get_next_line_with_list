@@ -20,20 +20,17 @@ void	list_prep(t_list **list)
 	t_list	*clean_node;
 	char	*buf;
 
-	x = 0;
-	i = 0;
 	buf = malloc(BUFFER_SIZE + 1);
 	clean_node = malloc(sizeof(t_list));
 	if (buf == NULL || clean_node == NULL)
 		return ;
 	last_node = find_last_node(*list);
+	x = 0;
+	i = 0;
 	while (last_node->str[i] && last_node->str[i] != '\n')
-		i++;
+		++i;
 	while (last_node->str[i] && last_node->str[++i])
-	{
-		buf[x] = last_node->str[i];
-		x++;
-	}
+		buf[x++] = last_node->str[i];
 	buf[x] = '\0';
 	clean_node->str = buf;
 	clean_node->next = NULL;
@@ -64,7 +61,7 @@ void	append_list(t_list **list, char *buf)
 	newnode = malloc(sizeof(t_list));
 	if (newnode == NULL)
 		return ;
-	if (list == NULL)
+	if (last_node == NULL)
 		*list = newnode;
 	else
 		last_node->next = newnode;
@@ -79,7 +76,7 @@ void	list_add(t_list **list, int fd)
 
 	while (!found_newline(*list))
 	{
-		buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+		buf = malloc(BUFFER_SIZE + 1);
 		if (buf == NULL)
 			return ;
 		char_read = read(fd, buf, BUFFER_SIZE);
@@ -95,11 +92,10 @@ void	list_add(t_list **list, int fd)
 
 char	*get_next_line(int fd)
 {
-	t_list	*list;
-	char	*next_line;
+	static t_list	*list = NULL;
+	char			*next_line;
 
-	list = NULL;
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &next_line, 0) < 0)
 		return (NULL);
 	list_add(&list, fd);
 	if (list == NULL)
@@ -109,13 +105,14 @@ char	*get_next_line(int fd)
 	return (next_line);
 }
 
-int	main(void)
-{
-	int	fd;
+// int	main(void)
+// {
+// 	int	fd;
 
-	fd = open("file.txt", O_RDWR | O_CREAT);
-	if (fd < 0)
-		printf("error open");
-	printf("%s", get_next_line(fd));
-	return (0);
-}
+// 	fd = open("file.txt", O_RDONLY | O_CREAT);
+// 	if (fd < 0)
+// 		printf("error open");
+// 	printf("%s", get_next_line(fd));
+// 	printf("%s", get_next_line(fd));
+// 	return (0);
+// }
