@@ -107,12 +107,16 @@ char	*get_next_line(int fd)
 
 // int	main(void)
 // {
-// 	int	fd;
+// 	int		fd;
+// 	char	*line;
 
 // 	fd = open("file.txt", O_RDONLY | O_CREAT);
 // 	if (fd < 0)
 // 		printf("error open");
-// 	printf("%s", get_next_line(fd));
-// 	printf("%s", get_next_line(fd));
+// 	while((line = get_next_line(fd)) != NULL)
+// 	{
+// 		printf("%s", line);
+// 		free(line);
+// 	}
 // 	return (0);
 // }

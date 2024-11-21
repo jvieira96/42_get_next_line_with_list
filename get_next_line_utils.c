@@ -111,7 +111,7 @@ void	dealloc(t_list **list, t_list *clean_node, char *buf)
 		*list = clean_node;
 	else
 	{
-		free(buf);
 		free(clean_node);
+		free(buf);
 	}
 }
