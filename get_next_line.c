@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-void	list_prep(t_list **list)
+void	ft_list_prep(t_list **list)
 {
 	int		i;
 	int		x;
@@ -24,7 +24,7 @@ void	list_prep(t_list **list)
 	clean_node = malloc(sizeof(t_list));
 	if (buf == NULL || clean_node == NULL)
 		return ;
-	last_node = find_last_node(*list);
+	last_node = ft_find_last_node(*list);
 	x = 0;
 	i = 0;
 	while (last_node->str[i] && last_node->str[i] != '\n')
@@ -34,30 +34,30 @@ void	list_prep(t_list **list)
 	buf[x] = '\0';
 	clean_node->str = buf;
 	clean_node->next = NULL;
-	dealloc(list, clean_node, buf);
+	ft_dealloc(list, clean_node, buf);
 }
 
-char	*get_line(t_list *list)
+char	*ft_get_line(t_list *list)
 {
 	int		str_len;
 	char	*next_str;
 
 	if (list == NULL)
 		return (NULL);
-	str_len = len_list(list);
+	str_len = ft_len_list(list);
 	next_str = malloc(str_len + 1);
 	if (next_str == NULL)
 		return (NULL);
-	copy_str(list, next_str);
+	ft_copy_str(list, next_str);
 	return (next_str);
 }
 
-void	append_list(t_list **list, char *buf)
+void	ft_append_list(t_list **list, char *buf)
 {
 	t_list	*newnode;
 	t_list	*last_node;
 
-	last_node = find_last_node(*list);
+	last_node = ft_find_last_node(*list);
 	newnode = malloc(sizeof(t_list));
 	if (newnode == NULL)
 		return ;
@@ -69,24 +69,30 @@ void	append_list(t_list **list, char *buf)
 	newnode->next = NULL;
 }
 
-void	list_add(t_list **list, int fd)
+void	ft_list_add(t_list **list, int fd)
 {
 	int		char_read;
 	char	*buf;
 
-	while (!found_newline(*list))
+	while (!ft_found_newline(*list))
 	{
-		buf = malloc(BUFFER_SIZE + 1);
+		buf = malloc((BUFFER_SIZE + 1) * sizeof(char));
 		if (buf == NULL)
 			return ;
 		char_read = read(fd, buf, BUFFER_SIZE);
+		if (char_read == -1)
+		{
+			free(buf);
+			free(*list);
+			return ;
+		}
 		if (!char_read)
 		{
 			free(buf);
 			return ;
 		}
 		buf[char_read] = '\0';
-		append_list(list, buf);
+		ft_append_list(list, buf);
 	}
 }
 
@@ -95,13 +101,13 @@ char	*get_next_line(int fd)
 	static t_list	*list = NULL;
 	char			*next_line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &next_line, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	list_add(&list, fd);
+	ft_list_add(&list, fd);
 	if (list == NULL)
 		return (NULL);
-	next_line = get_line(list);
-	list_prep(&list);
+	next_line = ft_get_line(list);
+	ft_list_prep(&list);
 	return (next_line);
 }
 
