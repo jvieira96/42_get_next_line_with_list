@@ -111,18 +111,18 @@ char	*get_next_line(int fd)
 	return (next_line);
 }
 
-// int	main(void)
-// {
-// 	int		fd;
-// 	char	*line;
+/* int	main(void)
+{
+	int		fd;
+	char	*line;
 
-// 	fd = open("file.txt", O_RDONLY | O_CREAT);
-// 	if (fd < 0)
-// 		printf("error open");
-// 	while((line = get_next_line(fd)) != NULL)
-// 	{
-// 		printf("%s", line);
-// 		free(line);
-// 	}
-// 	return (0);
-// }
+	fd = open("file.txt", O_RDONLY | O_CREAT);
+	if (fd < 0)
+		printf("error open");
+	while((line = get_next_line(fd)) != NULL)
+	{
+		printf("%s", line);
+		free(line);
+	}
+	return (0);
+} */

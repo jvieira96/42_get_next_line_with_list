@@ -56,7 +56,8 @@ void	ft_copy_str(t_list *list, char *new_str)
 		{
 			if (list->str[i] == '\n')
 			{
-				new_str[x++] = '\n';
+				new_str[x] = '\n';
+				x++;
 				new_str[x] = '\0';
 				return ;
 			}
