@@ -83,7 +83,8 @@ void	ft_list_add(t_list **list, int fd)
 		if (char_read == -1)
 		{
 			free(buf);
-			free(*list);
+			ft_dealloc(list, NULL, NULL);
+			*list = NULL;
 			return ;
 		}
 		if (!char_read)

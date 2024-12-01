@@ -108,6 +108,8 @@ void	ft_dealloc(t_list **list, t_list *clean_node, char *buf)
 		*list = temp;
 	}
 	*list = NULL;
+	if (!clean_node || !buf)
+		return ;
 	if (clean_node->str[0])
 		*list = clean_node;
 	else

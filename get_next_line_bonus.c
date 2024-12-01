@@ -52,17 +52,17 @@ char	*ft_get_line(t_list *list)
 	return (next_str);
 }
 
-void	ft_append_list(t_list **list, char *buf, int fd)
+void	ft_append_list(t_list **list, char *buf)
 {
 	t_list	*newnode;
 	t_list	*last_node;
 
-	last_node = ft_find_last_node(list[fd]);
+	last_node = ft_find_last_node(*list);
 	newnode = malloc(sizeof(t_list));
 	if (newnode == NULL)
 		return ;
 	if (last_node == NULL)
-		list[fd] = newnode;
+		*list = newnode;
 	else
 		last_node->next = newnode;
 	newnode->str = buf;
@@ -74,7 +74,7 @@ void	ft_list_add(t_list **list, int fd)
 	int		char_read;
 	char	*buf;
 
-	while (!ft_found_newline(list[fd]))
+	while (!ft_found_newline(*list))
 	{
 		buf = malloc((BUFFER_SIZE + 1) * sizeof(char));
 		if (buf == NULL)
@@ -83,7 +83,8 @@ void	ft_list_add(t_list **list, int fd)
 		if (char_read == -1)
 		{
 			free(buf);
-			free(*list);
+			ft_dealloc(list, NULL, NULL);
+			*list = NULL;
 			return ;
 		}
 		if (!char_read)
@@ -92,18 +93,18 @@ void	ft_list_add(t_list **list, int fd)
 			return ;
 		}
 		buf[char_read] = '\0';
-		ft_append_list(list, buf, fd);
+		ft_append_list(list, buf);
 	}
 }
 
 char	*get_next_line(int fd)
 {
-	static t_list	*list[4096];
+	static t_list	*list[MAX_FD];
 	char			*next_line;
 
-	if (fd < 0 || fd > 4095 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	ft_list_add(list, fd);
+	ft_list_add(&list[fd], fd);
 	if (list[fd] == NULL)
 		return (NULL);
 	next_line = ft_get_line(list[fd]);
